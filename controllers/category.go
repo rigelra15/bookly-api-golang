@@ -18,7 +18,7 @@ import (
 // @Produce json
 // @Success 200 {object} structs.APIResponse
 // @Failure 500 {object} structs.APIResponse
-// @Security [BearerAuth]
+// @Security BearerAuth
 // @Router /categories [get]
 func GetAllCategory(c *gin.Context) {
 	categories, err := repository.GetAllCategory(database.DbConnection)
@@ -44,7 +44,7 @@ func GetAllCategory(c *gin.Context) {
 // @Failure 400 {object} structs.APIResponse
 // @Failure 404 {object} structs.APIResponse
 // @Failure 500 {object} structs.APIResponse
-// @Security [BearerAuth]
+// @Security BearerAuth
 // @Router /categories/{id} [get]
 func GetCategoryByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
@@ -84,7 +84,7 @@ func GetCategoryByID(c *gin.Context) {
 // @Success 201 {object} structs.APIResponse
 // @Failure 400 {object} structs.APIResponse
 // @Failure 500 {object} structs.APIResponse
-// @Security [BearerAuth]
+// @Security BearerAuth
 // @Router /categories [post]
 func CreateCategory(c *gin.Context) {
 	var input structs.CategoryInput
@@ -127,7 +127,7 @@ func CreateCategory(c *gin.Context) {
 // @Failure 400 {object} structs.APIResponse
 // @Failure 404 {object} structs.APIResponse
 // @Failure 500 {object} structs.APIResponse
-// @Security [BearerAuth]
+// @Security BearerAuth
 // @Router /categories/{id} [put]
 func UpdateCategory(c *gin.Context) {
 	var input structs.UpdateCategoryInput
@@ -182,7 +182,7 @@ func UpdateCategory(c *gin.Context) {
 // @Failure 400 {object} structs.APIResponse
 // @Failure 404 {object} structs.APIResponse
 // @Failure 500 {object} structs.APIResponse
-// @Security [BearerAuth]
+// @Security BearerAuth
 // @Router /categories/{id} [delete]
 func DeleteCategory(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
@@ -221,7 +221,7 @@ func DeleteCategory(c *gin.Context) {
 // @Success 200 {object} structs.APIResponse
 // @Failure 400 {object} structs.APIResponse
 // @Failure 500 {object} structs.APIResponse
-// @Security [BearerAuth]
+// @Security BearerAuth
 // @Router /categories/{id}/books [get]
 func GetCategoryBooks(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))

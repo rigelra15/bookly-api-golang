@@ -1,12 +1,15 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "API untuk mengelola kategori dan buku di Bookly dengan menggunakan Golang dan PostgreSQL",
+        "description": "API untuk mengelola kategori dan buku di Bookly dengan menggunakan Golang dan PostgreSQL.\nAuthor: Rigel Ramadhani W. - Sanbercode Bootcamp Golang Batch 63",
         "title": "Bookly API",
-        "contact": {},
+        "contact": {
+            "name": "Rigel Ramadhani W.",
+            "url": "https://github.com/rigelra15"
+        },
         "version": "1.0"
     },
-    "host": "localhost:8080",
+    "host": "bookly-api-golang-production.up.railway.app",
     "basePath": "/api",
     "paths": {
         "/books": {

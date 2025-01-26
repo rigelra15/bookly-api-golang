@@ -9,7 +9,10 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "contact": {
+            "name": "Rigel Ramadhani W.",
+            "url": "https://github.com/rigelra15"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -1090,11 +1093,11 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "bookly-api-golang-production.up.railway.app",
 	BasePath:         "/api",
 	Schemes:          []string{},
 	Title:            "Bookly API",
-	Description:      "API untuk mengelola kategori dan buku di Bookly dengan menggunakan Golang dan PostgreSQL",
+	Description:      "API untuk mengelola kategori dan buku di Bookly dengan menggunakan Golang dan PostgreSQL.\nAuthor: Rigel Ramadhani W. - Sanbercode Bootcamp Golang Batch 63",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

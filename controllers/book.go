@@ -44,7 +44,7 @@ func GetAllBook(c *gin.Context) {
 // @Failure 400 {object} structs.APIResponse
 // @Failure 404 {object} structs.APIResponse
 // @Failure 500 {object} structs.APIResponse
-// @Security [BearerAuth]
+// @Security BearerAuth
 // @Router /books/{id} [get]
 func GetBookByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
@@ -84,7 +84,7 @@ func GetBookByID(c *gin.Context) {
 // @Success 201 {object} structs.APIResponse
 // @Failure 400 {object} structs.APIResponse
 // @Failure 500 {object} structs.APIResponse
-// @Security [BearerAuth]
+// @Security BearerAuth
 // @Router /books [post]
 func CreateBook(c *gin.Context) {
 	var input structs.BookInput
@@ -140,7 +140,7 @@ func CreateBook(c *gin.Context) {
 // @Failure 400 {object} structs.APIResponse
 // @Failure 404 {object} structs.APIResponse
 // @Failure 500 {object} structs.APIResponse
-// @Security [BearerAuth]
+// @Security BearerAuth
 // @Router /books/{id} [put]
 func UpdateBook(c *gin.Context) {
 	var input structs.UpdateBookInput
@@ -208,7 +208,7 @@ func UpdateBook(c *gin.Context) {
 // @Failure 400 {object} structs.APIResponse
 // @Failure 404 {object} structs.APIResponse
 // @Failure 500 {object} structs.APIResponse
-// @Security [BearerAuth]
+// @Security BearerAuth
 // @Router /books/{id} [delete]
 func DeleteBook(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))

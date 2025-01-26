@@ -143,11 +143,14 @@ definitions:
       username:
         type: string
     type: object
-host: localhost:8080
+host: bookly-api-golang-production.up.railway.app
 info:
-  contact: {}
-  description: API untuk mengelola kategori dan buku di Bookly dengan menggunakan
-    Golang dan PostgreSQL
+  contact:
+    name: Rigel Ramadhani W.
+    url: https://github.com/rigelra15
+  description: |-
+    API untuk mengelola kategori dan buku di Bookly dengan menggunakan Golang dan PostgreSQL.
+    Author: Rigel Ramadhani W. - Sanbercode Bootcamp Golang Batch 63
   title: Bookly API
   version: "1.0"
 paths:

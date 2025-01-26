@@ -10,6 +10,8 @@ import (
 	"bookly-api-golang/middlewares"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/files"
+	"github.com/gin-contrib/cors"
+	"time"
 	_ "bookly-api-golang/docs"
 	"os"
 
@@ -23,9 +25,12 @@ var (
 
 // @title Bookly API
 // @version 1.0
-// @description API untuk mengelola kategori dan buku di Bookly dengan menggunakan Golang dan PostgreSQL
+// @description API untuk mengelola kategori dan buku di Bookly dengan menggunakan Golang dan PostgreSQL.
+// @description Author: Rigel Ramadhani W. - Sanbercode Bootcamp Golang Batch 63
+// @contact.name Rigel Ramadhani W.
+// @contact.url https://github.com/rigelra15
 
-// @host localhost:8080
+// @host bookly-api-golang-production.up.railway.app
 // @BasePath /api
 // @securityDefinitions.apikey BearerAuth
 // @in header
@@ -59,6 +64,15 @@ func main() {
 	database.DBMigrate(DB)
 
 	router := gin.Default()
+
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
