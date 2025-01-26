@@ -42,15 +42,42 @@ func GetUserByID(db *sql.DB, id int) (structs.User, error) {
 }
 
 func CreateUser(db *sql.DB, user structs.User) error {
-	sqlQuery := "INSERT INTO users (username, password, created_by, modified_by) VALUES ($1, $2, $3, $4)"
-	_, err := db.Exec(sqlQuery, user.Username, user.Password, user.CreatedBy, user.ModifiedBy)
+	usernameExists, err := IsUsernameExists(db, user.Username)
 	if err != nil {
 		return err
 	}
+	if usernameExists {
+		return errors.New("username sudah digunakan")
+	}
+
+	sqlQuery := "INSERT INTO users (username, password, created_by, modified_by) VALUES ($1, $2, $3, $4)"
+	_, err = db.Exec(sqlQuery, user.Username, user.Password, user.CreatedBy, user.ModifiedBy)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
+func IsUsernameExists(db *sql.DB, username string) (bool, error) {
+	var exists bool
+	sqlQuery := "SELECT EXISTS (SELECT 1 FROM users WHERE username = $1)"
+	err := db.QueryRow(sqlQuery, username).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
+}
+
 func UpdateUser(db *sql.DB, user structs.User) error {
+	usernameExists, err := IsUsernameExistsByOtherUser(db, user.Username, user.ID)
+	if err != nil {
+		return err
+	}
+	if usernameExists {
+		return errors.New("username sudah digunakan")
+	}
+
 	sqlQuery := "UPDATE users SET username=$1, password=$2, modified_by=$3, modified_at=CURRENT_TIMESTAMP WHERE id=$4"
 	result, err := db.Exec(sqlQuery, user.Username, user.Password, user.ModifiedBy, user.ID)
 	if err != nil {
@@ -64,8 +91,20 @@ func UpdateUser(db *sql.DB, user structs.User) error {
 	if rowsAffected == 0 {
 		return errors.New("user tidak ditemukan")
 	}
+
 	return nil
 }
+
+func IsUsernameExistsByOtherUser(db *sql.DB, username string, userID int) (bool, error) {
+	var exists bool
+	sqlQuery := "SELECT EXISTS (SELECT 1 FROM users WHERE username = $1 AND id != $2)"
+	err := db.QueryRow(sqlQuery, username, userID).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
+}
+
 
 func DeleteUser(db *sql.DB, id int) error {
 	sqlQuery := "DELETE FROM users WHERE id=$1"

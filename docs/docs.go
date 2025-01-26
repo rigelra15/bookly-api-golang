@@ -51,9 +51,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menambahkan buku baru",
@@ -104,9 +102,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mendapatkan detail buku berdasarkan ID",
@@ -156,9 +152,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengubah data buku",
@@ -220,9 +214,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghapus buku",
@@ -274,9 +266,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mendapatkan semua kategori",
@@ -305,9 +295,7 @@ const docTemplate = `{
             "post": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menambahkan kategori baru",
@@ -358,9 +346,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mendapatkan detail kategori berdasarkan ID",
@@ -410,9 +396,7 @@ const docTemplate = `{
             "put": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui kategori",
@@ -474,9 +458,7 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghapus kategori",
@@ -528,9 +510,7 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mendapatkan buku berdasarkan ID kategori",

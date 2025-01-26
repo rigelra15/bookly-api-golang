@@ -45,9 +45,7 @@
             "post": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menambahkan buku baru",
@@ -98,9 +96,7 @@
             "get": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mendapatkan detail buku berdasarkan ID",
@@ -150,9 +146,7 @@
             "put": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mengubah data buku",
@@ -214,9 +208,7 @@
             "delete": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghapus buku",
@@ -268,9 +260,7 @@
             "get": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mendapatkan semua kategori",
@@ -299,9 +289,7 @@
             "post": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menambahkan kategori baru",
@@ -352,9 +340,7 @@
             "get": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mendapatkan detail kategori berdasarkan ID",
@@ -404,9 +390,7 @@
             "put": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Memperbarui kategori",
@@ -468,9 +452,7 @@
             "delete": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Menghapus kategori",
@@ -522,9 +504,7 @@
             "get": {
                 "security": [
                     {
-                        "": [
-                            "BearerAuth"
-                        ]
+                        "BearerAuth": []
                     }
                 ],
                 "description": "Mendapatkan buku berdasarkan ID kategori",

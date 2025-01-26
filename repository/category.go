@@ -4,6 +4,7 @@ import (
 	"bookly-api-golang/structs"
 	"database/sql"
 	"errors"
+	"strings"
 )
 
 func ValidateCategory(db *sql.DB, id int) (bool, error) {
@@ -49,6 +50,14 @@ func GetCategory(db *sql.DB, id int) (result structs.Category, err error) {
 }
 
 func CreateCategory(db *sql.DB, category structs.Category) (err error) {
+	existingCategory, err := GetCategoryByName(db, category.Name)
+	if err != nil && err != sql.ErrNoRows {
+		return err
+	}
+	if strings.EqualFold(existingCategory.Name, category.Name) {
+		return errors.New("nama kategori sudah digunakan")
+	}
+
 	sql := `
 		INSERT INTO categories (name, created_by, modified_by)
 		VALUES ($1, $2, $3)
@@ -64,6 +73,14 @@ func CreateCategory(db *sql.DB, category structs.Category) (err error) {
 	return nil
 }
 
+
+func GetCategoryByName(db *sql.DB, name string) (structs.Category, error) {
+	var category structs.Category
+	sql := `SELECT * FROM categories WHERE LOWER(name) = LOWER($1)`
+	err := db.QueryRow(sql, name).Scan(&category.ID, &category.Name, &category.CreatedAt, &category.CreatedBy, &category.ModifiedAt, &category.ModifiedBy)
+	return category, err
+}
+
 func UpdateCategory(db *sql.DB, category structs.Category) (err error) {
 	exists, err := ValidateCategory(db, category.ID)
 	if err != nil {
@@ -73,10 +90,18 @@ func UpdateCategory(db *sql.DB, category structs.Category) (err error) {
 		return errors.New("kategori tidak ditemukan")
 	}
 
+	existingCategory, err := GetCategoryByNameExcludingID(db, category.Name, category.ID)
+	if err != nil && err != sql.ErrNoRows {
+		return err
+	}
+	if strings.EqualFold(existingCategory.Name, category.Name) {
+		return errors.New("nama kategori sudah digunakan")
+	}
+
 	sql := `
 		UPDATE categories
-		SET name = $1, modified_at = CURRENT_TIMESTAMP, modified_by=$2
-		WHERE id=$3
+		SET name = $1, modified_at = CURRENT_TIMESTAMP, modified_by = $2
+		WHERE id = $3
 	`
 	_, err = db.Exec(sql, category.Name, category.ModifiedBy, category.ID)
 	if err != nil {
@@ -86,7 +111,22 @@ func UpdateCategory(db *sql.DB, category structs.Category) (err error) {
 	return nil
 }
 
+func GetCategoryByNameExcludingID(db *sql.DB, name string, id int) (structs.Category, error) {
+	var category structs.Category
+	sql := `SELECT * FROM categories WHERE LOWER(name) = LOWER($1) AND id != $2`
+	err := db.QueryRow(sql, name, id).Scan(&category.ID, &category.Name, &category.CreatedAt, &category.CreatedBy, &category.ModifiedAt, &category.ModifiedBy)
+	return category, err
+}
+
 func DeleteCategory(db *sql.DB, id int) (err error) {
+	hasBooks, err := CategoryHasBooks(db, id)
+	if err != nil {
+		return err
+	}
+	if hasBooks {
+		return errors.New("kategori tidak dapat dihapus karena masih memiliki buku")
+	}
+
 	exists, err := ValidateCategory(db, id)
 	if err != nil {
 		return err
@@ -104,7 +144,25 @@ func DeleteCategory(db *sql.DB, id int) (err error) {
 	return nil
 }
 
+func CategoryHasBooks(db *sql.DB, categoryID int) (bool, error) {
+	var exists bool
+	sqlQuery := "SELECT EXISTS (SELECT 1 FROM books WHERE category_id = $1)"
+	err := db.QueryRow(sqlQuery, categoryID).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
+}
+
 func GetCategoryBooks(db *sql.DB, id int) (result []structs.Book, err error) {
+	exists, err := ValidateCategory(db, id)
+	if err != nil {
+		return nil, err
+	}
+	if !exists {
+		return nil, errors.New("kategori tidak ditemukan")
+	}
+
 	sql := "SELECT * FROM books WHERE category_id=$1"
 	rows, err := db.Query(sql, id)
 	if err != nil {

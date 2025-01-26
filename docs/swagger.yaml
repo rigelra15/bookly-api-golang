@@ -200,8 +200,7 @@ paths:
           schema:
             $ref: '#/definitions/structs.APIResponse'
       security:
-      - "":
-        - BearerAuth
+      - BearerAuth: []
       summary: Create a new book
       tags:
       - Books
@@ -234,8 +233,7 @@ paths:
           schema:
             $ref: '#/definitions/structs.APIResponse'
       security:
-      - "":
-        - BearerAuth
+      - BearerAuth: []
       summary: Delete a book
       tags:
       - Books
@@ -267,8 +265,7 @@ paths:
           schema:
             $ref: '#/definitions/structs.APIResponse'
       security:
-      - "":
-        - BearerAuth
+      - BearerAuth: []
       summary: Get book by ID
       tags:
       - Books
@@ -308,8 +305,7 @@ paths:
           schema:
             $ref: '#/definitions/structs.APIResponse'
       security:
-      - "":
-        - BearerAuth
+      - BearerAuth: []
       summary: Update a book
       tags:
       - Books
@@ -328,8 +324,7 @@ paths:
           schema:
             $ref: '#/definitions/structs.APIResponse'
       security:
-      - "":
-        - BearerAuth
+      - BearerAuth: []
       summary: Get all categories
       tags:
       - Categories
@@ -360,8 +355,7 @@ paths:
           schema:
             $ref: '#/definitions/structs.APIResponse'
       security:
-      - "":
-        - BearerAuth
+      - BearerAuth: []
       summary: Create a category
       tags:
       - Categories
@@ -394,8 +388,7 @@ paths:
           schema:
             $ref: '#/definitions/structs.APIResponse'
       security:
-      - "":
-        - BearerAuth
+      - BearerAuth: []
       summary: Delete a category
       tags:
       - Categories
@@ -427,8 +420,7 @@ paths:
           schema:
             $ref: '#/definitions/structs.APIResponse'
       security:
-      - "":
-        - BearerAuth
+      - BearerAuth: []
       summary: Get category by ID
       tags:
       - Categories
@@ -468,8 +460,7 @@ paths:
           schema:
             $ref: '#/definitions/structs.APIResponse'
       security:
-      - "":
-        - BearerAuth
+      - BearerAuth: []
       summary: Update a category
       tags:
       - Categories
@@ -498,8 +489,7 @@ paths:
           schema:
             $ref: '#/definitions/structs.APIResponse'
       security:
-      - "":
-        - BearerAuth
+      - BearerAuth: []
       summary: Get books by category ID
       tags:
       - Categories

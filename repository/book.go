@@ -6,6 +6,7 @@ import (
 	"errors"
 	"log"
 	"fmt"
+	"strings"
 )
 
 func ValidateCategoryID(db *sql.DB, categoryID int) (bool, error) {
@@ -84,7 +85,15 @@ func CreateBook(db *sql.DB, book structs.Book) (err error) {
 		log.Printf("Invalid category_id: %d", book.CategoryID)
 		return errors.New("category_id tidak valid")
 	}
-	
+
+	existingBook, err := GetBookByTitle(db, book.Title)
+	if err != nil && err != sql.ErrNoRows {
+		return err
+	}
+	if strings.EqualFold(existingBook.Title, book.Title) {
+		return errors.New("judul buku sudah digunakan oleh buku lain")
+	}	
+
 	if err := ValidateReleaseYear(book.ReleaseYear); err != nil {
 		return err
 	}
@@ -106,6 +115,16 @@ func CreateBook(db *sql.DB, book structs.Book) (err error) {
 	return nil
 }
 
+func GetBookByTitle(db *sql.DB, title string) (structs.Book, error) {
+	var book structs.Book
+	sql := "SELECT * FROM books WHERE LOWER(title) = LOWER($1)"
+	err := db.QueryRow(sql, title).Scan(
+		&book.ID, &book.Title, &book.Description, &book.ImageURL,
+		&book.ReleaseYear, &book.Price, &book.TotalPage, &book.Thickness,
+		&book.CategoryID, &book.CreatedAt, &book.CreatedBy, &book.ModifiedAt, &book.ModifiedBy,
+	)
+	return book, err
+}
 
 func UpdateBook(db *sql.DB, book structs.Book) (err error) {
 	exists, err := ValidateExistBook(db, book.ID)
@@ -126,6 +145,14 @@ func UpdateBook(db *sql.DB, book structs.Book) (err error) {
 
 	if err := ValidateReleaseYear(book.ReleaseYear); err != nil {
 		return err
+	}
+
+	titleUsed, err := IsTitleUsedByOtherBook(db, book.Title, book.ID)
+	if err != nil {
+		return err
+	}
+	if titleUsed {
+		return errors.New("judul buku sudah digunakan oleh buku lain")
 	}
 
 	book.Thickness = CalculateThickness(book.TotalPage)
@@ -150,6 +177,20 @@ func UpdateBook(db *sql.DB, book structs.Book) (err error) {
 	}
 
 	return nil
+}
+
+func IsTitleUsedByOtherBook(db *sql.DB, title string, bookID int) (bool, error) {
+	var exists bool
+	sql := `
+        SELECT EXISTS (
+            SELECT 1 FROM books WHERE LOWER(title) = LOWER($1) AND id != $2
+        )
+    `
+	err := db.QueryRow(sql, title, bookID).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
 }
 
 func DeleteBook(db *sql.DB, id int) (err error) {

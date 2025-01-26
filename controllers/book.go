@@ -117,6 +117,13 @@ func CreateBook(c *gin.Context) {
 			return
 		}
 
+		if err.Error() == "judul buku sudah digunakan oleh buku lain" {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Gagal menambahkan buku",
 		})
@@ -181,6 +188,13 @@ func UpdateBook(c *gin.Context) {
 		}
 
 		if err.Error() == "release_year harus di antara 1980 dan 2024" {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		if err.Error() == "judul buku sudah digunakan oleh buku lain" {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"error": err.Error(),
 			})

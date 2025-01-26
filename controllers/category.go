@@ -104,6 +104,13 @@ func CreateCategory(c *gin.Context) {
 
 	err := repository.CreateCategory(database.DbConnection, category)
 	if err != nil {
+		if err.Error() == "nama kategori sudah digunakan" {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Gagal menambahkan kategori",
 		})
@@ -159,11 +166,19 @@ func UpdateCategory(c *gin.Context) {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": err.Error(),
 			})
-		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Gagal memperbarui kategori",
-			})
+			return
 		}
+		
+		if err.Error() == "nama kategori sudah digunakan" {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Gagal memperbarui kategori",
+		})
 		return
 	}
 
@@ -195,15 +210,22 @@ func DeleteCategory(c *gin.Context) {
 
 	err = repository.DeleteCategory(database.DbConnection, id)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": "Kategori tidak ditemukan",
+		if err.Error() == "kategori tidak dapat dihapus karena masih memiliki buku" {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
 			})
-		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "Gagal menghapus kategori",
-			})
+			return
 		}
+		if err.Error() == "kategori tidak ditemukan" {
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Gagal menghapus kategori",
+		})
 		return
 	}
 
@@ -234,6 +256,12 @@ func GetCategoryBooks(c *gin.Context) {
 
 	books, err := repository.GetCategoryBooks(database.DbConnection, id)
 	if err != nil {
+		if err.Error() == "kategori tidak ditemukan" {
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Gagal mendapatkan buku untuk kategori ini",
 		})

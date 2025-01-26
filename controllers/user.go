@@ -157,11 +157,20 @@ func CreateUser(c *gin.Context) {
 
 	err = repository.CreateUser(database.DbConnection, user)
 	if err != nil {
+		if err.Error() == "username sudah digunakan" {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Gagal membuat user",
 		})
 		return
 	}
+
+	
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "User berhasil dibuat",
@@ -216,8 +225,21 @@ func UpdateUser(c *gin.Context) {
 
 	err = repository.UpdateUser(database.DbConnection, user)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "User tidak ditemukan",
+		if err.Error() == "username sudah digunakan" {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		if err.Error() == "user tidak ditemukan" {
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "Gagal memperbarui user",
 		})
 		return
 	}

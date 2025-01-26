@@ -98,12 +98,16 @@ func main() {
 		}
 		userRoutes := api.Group("/users")
 		{
-			userRoutes.POST("/login", controllers.Login)
-			userRoutes.GET("/", controllers.GetAllUsers)
-			userRoutes.GET("/:id", controllers.GetUserByID)
 			userRoutes.POST("/", controllers.CreateUser)
-			userRoutes.PUT("/:id", controllers.UpdateUser)
-			userRoutes.DELETE("/:id", controllers.DeleteUser)
+			userRoutes.POST("/login", controllers.Login)
+
+			protectedUserRoutes := userRoutes.Group("/", middlewares.JWTAuthMiddleware())
+			{
+					protectedUserRoutes.GET("/", controllers.GetAllUsers)
+					protectedUserRoutes.GET("/:id", controllers.GetUserByID)
+					protectedUserRoutes.PUT("/:id", controllers.UpdateUser)
+					protectedUserRoutes.DELETE("/:id", controllers.DeleteUser)
+			}
 		}
 	}
 
