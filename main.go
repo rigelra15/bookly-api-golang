@@ -49,5 +49,5 @@ func main() {
 	routes.CategoryRoutes(api)
 	routes.BookRoutes(api)
 
-	router.Run(":8080")
+	router.Run(":" + os.Getenv("PORT"))
 }
