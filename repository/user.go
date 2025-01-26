@@ -4,6 +4,7 @@ import (
 	"bookly-api-golang/structs"
 	"database/sql"
 	"errors"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func GetAllUsers(db *sql.DB) ([]structs.User, error) {
@@ -81,4 +82,27 @@ func DeleteUser(db *sql.DB, id int) error {
 		return errors.New("user tidak ditemukan")
 	}
 	return nil
+}
+
+func GetUserByUsername(db *sql.DB, username string) (structs.User, error) {
+	var user structs.User
+	sqlQuery := "SELECT id, username, password, created_at, created_by, modified_at, modified_by FROM users WHERE username = $1"
+	err := db.QueryRow(sqlQuery, username).Scan(&user.ID, &user.Username, &user.Password, &user.CreatedAt, &user.CreatedBy, &user.ModifiedAt, &user.ModifiedBy)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return user, errors.New("user tidak ditemukan")
+		}
+		return user, err
+	}
+	return user, nil
+}
+
+func CheckPasswordHash(password, hashedPassword string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	return err == nil
+}
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(bytes), err
 }

@@ -1,0 +1,691 @@
+basePath: /api
+definitions:
+  structs.APIResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+      result: {}
+    type: object
+  structs.Book:
+    properties:
+      category_id:
+        type: integer
+      created_at:
+        type: string
+      created_by:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+      modified_at:
+        type: string
+      modified_by:
+        type: string
+      price:
+        type: integer
+      release_year:
+        type: integer
+      thickness:
+        type: string
+      title:
+        type: string
+      total_page:
+        type: integer
+    type: object
+  structs.BookInput:
+    properties:
+      category_id:
+        type: integer
+      created_by:
+        type: string
+      description:
+        type: string
+      image_url:
+        type: string
+      modified_by:
+        type: string
+      price:
+        type: integer
+      release_year:
+        type: integer
+      title:
+        type: string
+      total_page:
+        type: integer
+    type: object
+  structs.Category:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      id:
+        type: integer
+      modified_at:
+        type: string
+      modified_by:
+        type: string
+      name:
+        type: string
+    type: object
+  structs.CategoryInput:
+    properties:
+      created_by:
+        type: string
+      modified_by:
+        type: string
+      name:
+        type: string
+    type: object
+  structs.Login:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  structs.UpdateBookInput:
+    properties:
+      category_id:
+        type: integer
+      description:
+        type: string
+      image_url:
+        type: string
+      modified_by:
+        type: string
+      price:
+        type: integer
+      release_year:
+        type: integer
+      title:
+        type: string
+      total_page:
+        type: integer
+    type: object
+  structs.UpdateCategoryInput:
+    properties:
+      modified_by:
+        type: string
+      name:
+        type: string
+    type: object
+  structs.User:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      id:
+        type: integer
+      modified_at:
+        type: string
+      modified_by:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  structs.UserInput:
+    properties:
+      created_by:
+        type: string
+      modified_by:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API untuk mengelola kategori dan buku di Bookly dengan menggunakan
+    Golang dan PostgreSQL
+  title: Bookly API
+  version: "1.0"
+paths:
+  /books:
+    get:
+      description: Mendapatkan semua buku
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all books
+      tags:
+      - Books
+    post:
+      consumes:
+      - application/json
+      description: Menambahkan buku baru
+      parameters:
+      - description: Book body
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/structs.BookInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+      security:
+      - "":
+        - BearerAuth
+      summary: Create a new book
+      tags:
+      - Books
+  /books/{id}:
+    delete:
+      description: Menghapus buku
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+      security:
+      - "":
+        - BearerAuth
+      summary: Delete a book
+      tags:
+      - Books
+    get:
+      description: Mendapatkan detail buku berdasarkan ID
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.Book'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+      security:
+      - "":
+        - BearerAuth
+      summary: Get book by ID
+      tags:
+      - Books
+    put:
+      consumes:
+      - application/json
+      description: Mengubah data buku
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Book object
+        in: body
+        name: book
+        required: true
+        schema:
+          $ref: '#/definitions/structs.UpdateBookInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+      security:
+      - "":
+        - BearerAuth
+      summary: Update a book
+      tags:
+      - Books
+  /categories:
+    get:
+      description: Mendapatkan semua kategori
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+      security:
+      - "":
+        - BearerAuth
+      summary: Get all categories
+      tags:
+      - Categories
+    post:
+      consumes:
+      - application/json
+      description: Menambahkan kategori baru
+      parameters:
+      - description: Category object
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/structs.CategoryInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+      security:
+      - "":
+        - BearerAuth
+      summary: Create a category
+      tags:
+      - Categories
+  /categories/{id}:
+    delete:
+      description: Menghapus kategori
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+      security:
+      - "":
+        - BearerAuth
+      summary: Delete a category
+      tags:
+      - Categories
+    get:
+      description: Mendapatkan detail kategori berdasarkan ID
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.Category'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+      security:
+      - "":
+        - BearerAuth
+      summary: Get category by ID
+      tags:
+      - Categories
+    put:
+      consumes:
+      - application/json
+      description: Memperbarui kategori
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Category object
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/structs.UpdateCategoryInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+      security:
+      - "":
+        - BearerAuth
+      summary: Update a category
+      tags:
+      - Categories
+  /categories/{id}/books:
+    get:
+      description: Mendapatkan buku berdasarkan ID kategori
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+      security:
+      - "":
+        - BearerAuth
+      summary: Get books by category ID
+      tags:
+      - Categories
+  /users:
+    get:
+      description: Mendapatkan semua user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/structs.User'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+      security:
+      - JWT: []
+      summary: Get all users
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Membuat user baru
+      parameters:
+      - description: User object
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/structs.UserInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+      security:
+      - JWT: []
+      summary: Create new user
+      tags:
+      - Users
+  /users/{id}:
+    delete:
+      description: Menghapus user berdasarkan ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+      security:
+      - JWT: []
+      summary: Delete user
+      tags:
+      - Users
+    get:
+      description: Mendapatkan user berdasarkan ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.User'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+      security:
+      - JWT: []
+      summary: Get user by ID
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      description: Mengubah data user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User object
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/structs.UserInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+      security:
+      - JWT: []
+      summary: Update user
+      tags:
+      - Users
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Autentikasi user untuk mendapatkan token JWT
+      parameters:
+      - description: User login credentials
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/structs.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/structs.APIResponse'
+      summary: Login user
+      tags:
+      - Auth
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

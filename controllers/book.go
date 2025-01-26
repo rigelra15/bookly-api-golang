@@ -11,6 +11,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GetAllBook godoc
+// @Summary Get all books
+// @Description Mendapatkan semua buku
+// @Tags Books
+// @Produce json
+// @Success 200 {object} structs.APIResponse
+// @Failure 500 {object} structs.APIResponse
+// @Security BearerAuth
+// @Router /books [get]
 func GetAllBook(c *gin.Context) {
 	books, err := repository.GetAllBook(database.DbConnection)
 	if err != nil {
@@ -25,6 +34,18 @@ func GetAllBook(c *gin.Context) {
 	})
 }
 
+// GetBookByID godoc
+// @Summary Get book by ID
+// @Description Mendapatkan detail buku berdasarkan ID
+// @Tags Books
+// @Produce json
+// @Param id path int true "Book ID"
+// @Success 200 {object} structs.Book
+// @Failure 400 {object} structs.APIResponse
+// @Failure 404 {object} structs.APIResponse
+// @Failure 500 {object} structs.APIResponse
+// @Security [BearerAuth]
+// @Router /books/{id} [get]
 func GetBookByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -53,14 +74,38 @@ func GetBookByID(c *gin.Context) {
 	})
 }
 
+// CreateBook godoc
+// @Summary Create a new book
+// @Description Menambahkan buku baru
+// @Tags Books
+// @Accept json
+// @Produce json
+// @Param book body structs.BookInput true "Book body"
+// @Success 201 {object} structs.APIResponse
+// @Failure 400 {object} structs.APIResponse
+// @Failure 500 {object} structs.APIResponse
+// @Security [BearerAuth]
+// @Router /books [post]
 func CreateBook(c *gin.Context) {
-	var book structs.Book
+	var input structs.BookInput
 
-	if err := c.ShouldBindJSON(&book); err != nil {
+	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Data yang dimasukkan tidak valid",
 		})
 		return
+	}
+
+	book := structs.Book{
+		Title:       input.Title,
+		Description: input.Description,
+		ImageURL:    input.ImageURL,
+		ReleaseYear: input.ReleaseYear,
+		Price:       input.Price,
+		TotalPage:   input.TotalPage,
+		CategoryID:  input.CategoryID,
+		CreatedBy:   input.CreatedBy,
+		ModifiedBy:  input.ModifiedBy,
 	}
 
 	err := repository.CreateBook(database.DbConnection, book)
@@ -83,8 +128,22 @@ func CreateBook(c *gin.Context) {
 	})
 }
 
+// UpdateBook godoc
+// @Summary Update a book
+// @Description Mengubah data buku
+// @Tags Books
+// @Accept json
+// @Produce json
+// @Param id path int true "Book ID"
+// @Param book body structs.UpdateBookInput true "Book object"
+// @Success 200 {object} structs.APIResponse
+// @Failure 400 {object} structs.APIResponse
+// @Failure 404 {object} structs.APIResponse
+// @Failure 500 {object} structs.APIResponse
+// @Security [BearerAuth]
+// @Router /books/{id} [put]
 func UpdateBook(c *gin.Context) {
-	var book structs.Book
+	var input structs.UpdateBookInput
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -93,14 +152,24 @@ func UpdateBook(c *gin.Context) {
 		return
 	}
 
-	if err := c.ShouldBindJSON(&book); err != nil {
+	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "Data yang dimasukkan tidak valid",
 		})
 		return
 	}
 
-	book.ID = id
+	book := structs.Book{
+		ID:          id,
+		Title:       input.Title,
+		Description: input.Description,
+		ImageURL:    input.ImageURL,
+		ReleaseYear: input.ReleaseYear,
+		Price:       input.Price,
+		TotalPage:   input.TotalPage,
+		CategoryID:  input.CategoryID,
+		ModifiedBy:  input.ModifiedBy,
+	}
 
 	err = repository.UpdateBook(database.DbConnection, book)
 	if err != nil {
@@ -129,6 +198,18 @@ func UpdateBook(c *gin.Context) {
 	})
 }
 
+// DeleteBook godoc
+// @Summary Delete a book
+// @Description Menghapus buku
+// @Tags Books
+// @Produce json
+// @Param id path int true "Book ID"
+// @Success 200 {object} structs.APIResponse
+// @Failure 400 {object} structs.APIResponse
+// @Failure 404 {object} structs.APIResponse
+// @Failure 500 {object} structs.APIResponse
+// @Security [BearerAuth]
+// @Router /books/{id} [delete]
 func DeleteBook(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

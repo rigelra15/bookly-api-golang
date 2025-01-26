@@ -6,7 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"bookly-api-golang/database"
-	"bookly-api-golang/routes"
+	"bookly-api-golang/controllers"
+	"bookly-api-golang/middlewares"
+	"github.com/swaggo/gin-swagger"
+	"github.com/swaggo/files"
+	_ "bookly-api-golang/docs"
 	"os"
 
 	_ "github.com/lib/pq"
@@ -16,6 +20,17 @@ var (
 	DB *sql.DB
 	err error
 )
+
+// @title Bookly API
+// @version 1.0
+// @description API untuk mengelola kategori dan buku di Bookly dengan menggunakan Golang dan PostgreSQL
+
+// @host localhost:8080
+// @BasePath /api
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @security BearerAuth
 
 func main() {
 	err = godotenv.Load("config/.env")
@@ -45,9 +60,38 @@ func main() {
 
 	router := gin.Default()
 
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	api := router.Group("/api")
-	routes.CategoryRoutes(api)
-	routes.BookRoutes(api)
+	{
+		categoryRoutes := api.Group("/categories", middlewares.JWTAuthMiddleware())
+		{
+			categoryRoutes.GET("/", controllers.GetAllCategory)
+			categoryRoutes.GET("/:id", controllers.GetCategoryByID)
+			categoryRoutes.POST("/", controllers.CreateCategory)
+			categoryRoutes.PUT("/:id", controllers.UpdateCategory)
+			categoryRoutes.DELETE("/:id", controllers.DeleteCategory)
+			categoryRoutes.GET("/:id/books", controllers.GetCategoryBooks)
+		}
+
+		bookRoutes := api.Group("/books", middlewares.JWTAuthMiddleware())
+		{
+			bookRoutes.GET("/", controllers.GetAllBook)
+			bookRoutes.GET("/:id", controllers.GetBookByID)
+			bookRoutes.POST("/", controllers.CreateBook)
+			bookRoutes.PUT("/:id", controllers.UpdateBook)
+			bookRoutes.DELETE("/:id", controllers.DeleteBook)
+		}
+		userRoutes := api.Group("/users")
+		{
+			userRoutes.POST("/login", controllers.Login)
+			userRoutes.GET("/", controllers.GetAllUsers)
+			userRoutes.GET("/:id", controllers.GetUserByID)
+			userRoutes.POST("/", controllers.CreateUser)
+			userRoutes.PUT("/:id", controllers.UpdateUser)
+			userRoutes.DELETE("/:id", controllers.DeleteUser)
+		}
+	}
 
 	router.Run(":" + os.Getenv("PORT"))
 }
